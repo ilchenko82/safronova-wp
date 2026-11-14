@@ -2,17 +2,19 @@
 """Конвертер контенту Vigbo -> блоки Gutenberg (WordPress).
 
 Вхід:  data/site.json (знімок сайту safronova.com.ua)
-Вихід: build/wp-content/plugins/safronova-migration/data/content.json
-       build/wp-content/themes/safronova/parts/footer.html
-       build/media-list.txt (список усіх фото для резервного скрипта)
+Вихід: wp-content/plugins/safronova-migration/data/content.json
+       wp-content/themes/safronova/parts/footer.html
+       media-list.txt (список усіх фото для резервного скрипта)
 """
 import json, re, os, sys
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'data', 'site.json')
-OUT_PLUGIN = os.path.join(ROOT, 'build', 'wp-content', 'plugins', 'safronova-migration', 'data')
-OUT_THEME = os.path.join(ROOT, 'build', 'wp-content', 'themes', 'safronova')
+# в репозитории скрипт лежит в tools/, результат пишется в ../wp-content
+REPO = os.path.dirname(ROOT)
+OUT_PLUGIN = os.path.join(REPO, 'wp-content', 'plugins', 'safronova-migration', 'data')
+OUT_THEME = os.path.join(REPO, 'wp-content', 'themes', 'safronova')
 CDN = 'https://static-cdn4-2.vigbo.tech/u44468/57218/'
 
 MEDIA = []          # унікальні URL фото в порядку появи
@@ -23,6 +25,14 @@ def url(u):
         u = CDN + u[2:]
     elif u.startswith('//'):
         u = 'https:' + u
+    # Vigbo хранит фото только с префиксом размера: «2000-» — самая большая копия (оригинал).
+    # Исключения: фоны слайдера (/section/) и логотип (/logo/) лежат без префикса.
+    if '/section/' not in u and '/logo/' not in u:
+        base, _, query = u.partition('?')
+        d, _, f = base.rpartition('/')
+        if not f.startswith('2000-'):
+            f = '2000-' + f
+        u = d + '/' + f + ('?' + query if query else '')
     if u not in MEDIA:
         MEDIA.append(u)
     return u
@@ -302,7 +312,7 @@ def main():
         f.write(block('group', {'tagName': 'div', 'className': 'sf-footer', 'layout': {'type': 'constrained'}},
                       '<div class="wp-block-group sf-footer">' + footer + '</div>') + '\n')
 
-    with open(os.path.join(ROOT, 'build', 'media-list.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(REPO, 'media-list.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(MEDIA) + '\n')
     print('pages', len(out['pages']), 'posts', len(out['posts']), 'media', len(MEDIA))
 
