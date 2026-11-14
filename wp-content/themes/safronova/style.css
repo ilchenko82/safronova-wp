@@ -162,6 +162,8 @@ body.sf-menu-open { overflow: hidden; }
 .sf-main--front { padding: 0; }
 .sf-main > .wp-block-post-content,
 .sf-main > .sf-wrap { width: min(1600px, 91%); margin-left: auto; margin-right: auto; }
+.sf-main--front > .wp-block-post-content { width: 100%; }
+.sf-main--front .wp-block-post-content > .wp-block-gallery.sf-hero { margin-bottom: 0 !important; }
 .wp-block-post-content > * { max-width: none; }
 
 /* каждый «виджет» как в Vigbo: отступ 20px снизу */

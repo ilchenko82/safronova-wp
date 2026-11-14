@@ -23,6 +23,15 @@ define( 'SFMIG_THEME', 'safronova' );
 define( 'SFMIG_BATCH', 3 );
 
 /**
+ * Активна ли тема Safronova (по её коду — папка может называться иначе, например safronova-main).
+ *
+ * @return bool
+ */
+function sfmig_theme_active() {
+	return function_exists( 'safronova_render_header' ) || SFMIG_THEME === get_stylesheet();
+}
+
+/**
  * Данные для импорта (data/content.json).
  *
  * @return array
@@ -76,12 +85,11 @@ function sfmig_page() {
 	$map    = (array) get_option( 'sfmig_media_map', array() );
 	$done   = count( $map );
 	$errors = (array) get_option( 'sfmig_errors', array() );
-	$theme  = wp_get_theme();
 	?>
 	<div class="wrap">
 		<h1>Перенос сайта с Vigbo</h1>
 		<p>Плагин создаст все страницы и записи блога с прежними адресами, меню и SEO-заголовки, скачает все фотографии в медиатеку WordPress, установит логотип и шрифты.</p>
-		<?php if ( SFMIG_THEME !== $theme->get_stylesheet() ) : ?>
+		<?php if ( ! sfmig_theme_active() ) : ?>
 			<div class="notice notice-warning"><p><strong>Сначала активируйте тему «Safronova»</strong> (Внешний вид → Темы), затем запустите перенос.</p></div>
 		<?php endif; ?>
 		<table class="widefat striped" style="max-width:720px;margin:16px 0">
@@ -209,7 +217,7 @@ function sfmig_error( $msg ) {
  * @param mixed  $value Значение.
  */
 function sfmig_theme_mod( $key, $value ) {
-	if ( get_stylesheet() === SFMIG_THEME ) {
+	if ( sfmig_theme_active() ) {
 		set_theme_mod( $key, $value );
 		return;
 	}
@@ -357,7 +365,7 @@ function sfmig_build_menus( $ids ) {
 		),
 	);
 	$locations = (array) get_theme_mod( 'nav_menu_locations', array() );
-	if ( get_stylesheet() !== SFMIG_THEME ) {
+	if ( ! sfmig_theme_active() ) {
 		$mods      = (array) get_option( 'theme_mods_' . SFMIG_THEME, array() );
 		$locations = isset( $mods['nav_menu_locations'] ) ? (array) $mods['nav_menu_locations'] : array();
 	}
@@ -523,7 +531,7 @@ function sfmig_sideload( $url ) {
 function sfmig_import_fonts() {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	$log   = array();
-	$theme = get_theme_root() . '/' . SFMIG_THEME . '/assets/fonts/';
+	$theme = ( sfmig_theme_active() ? get_template_directory() : get_theme_root() . '/' . SFMIG_THEME ) . '/assets/fonts/';
 	$up    = wp_get_upload_dir();
 	$alt   = trailingslashit( $up['basedir'] ) . 'safronova/fonts/';
 	foreach ( array( 'firasans-regular.woff', 'playfairdisplay-regular.woff', 'opensans-regular.woff' ) as $f ) {

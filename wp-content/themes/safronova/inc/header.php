@@ -48,12 +48,21 @@ function safronova_logo_html() {
  * @return string
  */
 function safronova_menu_items( $location ) {
+	$args = array( 'theme_location' => $location );
 	if ( ! has_nav_menu( $location ) ) {
-		return '';
+		// Запасной вариант: меню, созданные импортёром, ищем по имени.
+		$names = array(
+			'sf-left'  => 'Меню слева',
+			'sf-right' => 'Меню справа',
+		);
+		$menu  = isset( $names[ $location ] ) ? wp_get_nav_menu_object( $names[ $location ] ) : false;
+		if ( ! $menu ) {
+			return '';
+		}
+		$args = array( 'menu' => $menu->term_id );
 	}
 	$html = wp_nav_menu(
-		array(
-			'theme_location' => $location,
+		$args + array(
 			'container'      => false,
 			'items_wrap'     => '%3$s',
 			'depth'          => 2,
