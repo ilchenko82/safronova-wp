@@ -105,7 +105,9 @@ add_action( 'admin_head-index.php', 'safronova_dashboard_css' );
 function safronova_dashboard_css() {
 	?>
 	<style>
-		#sf_dashboard { grid-column: 1 / -1; }
+		#dashboard-widgets .postbox-container { width: 100% !important; float: none; }
+		#dashboard-widgets .postbox-container .empty-container { display: none; }
+		#dashboard-widgets .meta-box-sortables { min-height: 0; }
 		.sf-dash { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
 		.sf-dash__btn { display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid #dcdcde; border-radius: 8px; background: #fff; text-decoration: none; color: #1d2327; transition: border-color .2s, box-shadow .2s; }
 		.sf-dash__btn:hover { border-color: #2271b1; box-shadow: 0 2px 8px rgba(0,0,0,.08); color: #2271b1; }
