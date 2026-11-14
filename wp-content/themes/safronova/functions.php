@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SAFRONOVA_VERSION', '0.1.0' );
+define( 'SAFRONOVA_VERSION', '0.2.0' );
 define( 'SAFRONOVA_DIR', get_template_directory() );
 define( 'SAFRONOVA_URI', get_template_directory_uri() );
 
@@ -20,6 +20,8 @@ require_once SAFRONOVA_DIR . '/inc/leads.php';
 require_once SAFRONOVA_DIR . '/inc/admin.php';
 require_once SAFRONOVA_DIR . '/inc/patterns.php';
 require_once SAFRONOVA_DIR . '/inc/analytics.php';
+require_once SAFRONOVA_DIR . '/inc/stats.php';
+require_once SAFRONOVA_DIR . '/inc/vigbo-admin.php';
 
 add_action( 'after_setup_theme', 'safronova_setup' );
 /**
