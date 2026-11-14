@@ -126,11 +126,14 @@ function safronova_assets() {
 	);
 }
 
-add_action( 'enqueue_block_editor_assets', 'safronova_editor_assets' );
+add_action( 'enqueue_block_assets', 'safronova_editor_assets' );
 /**
- * Шрифты в редакторе блоков.
+ * Шрифты в редакторе блоков (хук enqueue_block_assets попадает и внутрь окна редактора).
  */
 function safronova_editor_assets() {
+	if ( ! is_admin() ) {
+		return;
+	}
 	wp_register_style( 'safronova-editor-fonts', false, array(), SAFRONOVA_VERSION );
 	wp_enqueue_style( 'safronova-editor-fonts' );
 	wp_add_inline_style( 'safronova-editor-fonts', safronova_font_css() );
