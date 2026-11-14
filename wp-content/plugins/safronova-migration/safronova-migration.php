@@ -322,7 +322,10 @@ function sfmig_import_content() {
 		update_option( 'page_for_posts', $ids['blog'] );
 	}
 	update_option( 'posts_per_page', 9 );
-	update_option( 'permalink_structure', '/blog/%postname%/' );
+	// Адреса записей как на Vigbo: /blog/<запись>. set_permalink_structure обновляет и настройку,
+	// и объект правил в памяти — иначе сброс правил ниже построит их по старому формату.
+	global $wp_rewrite;
+	$wp_rewrite->set_permalink_structure( '/blog/%postname%/' );
 	update_option( 'blogname', 'Елена Сафронова' );
 	update_option( 'blogdescription', 'Фотограф беременности и новорожденных в Киеве' );
 	update_option( 'sf_contact_email', 'info.elenasafronova@gmail.com' );
@@ -649,7 +652,7 @@ function sfmig_finalize() {
 		? array( 't' => 'Внимание: в ' . $left . ' страницах остались ссылки на Vigbo (фото не скачались). Запустите перенос ещё раз.', 'e' => 1 )
 		: array( 't' => 'Ссылок на Vigbo не осталось — сайт полностью независим' );
 
-	flush_rewrite_rules();
+	flush_rewrite_rules( true ); // true — заодно обновить .htaccess на Apache-хостинге
 	update_option( 'sfmig_finished', time() );
 	return $log;
 }
