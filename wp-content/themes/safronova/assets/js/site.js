@@ -104,7 +104,8 @@
 
 	/* ---------- полноэкранный просмотр фото ---------- */
 	function initLightbox() {
-		var galleries = document.querySelectorAll('.wp-block-gallery.sf-gallery');
+		// любая галерея на страницах (кроме слайдера главной) открывается на весь экран
+		var galleries = document.querySelectorAll('.wp-block-post-content .wp-block-gallery:not(.sf-hero)');
 		if (!galleries.length) { return; }
 
 		var lb = document.createElement('div');

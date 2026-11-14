@@ -209,6 +209,8 @@ body.sf-menu-open { overflow: hidden; }
 .wp-block-gallery.sf-gallery img { width: 100% !important; height: auto !important; cursor: pointer; transition: opacity .3s; }
 .wp-block-gallery.sf-gallery img:hover { opacity: .85; }
 
+.wp-block-post-content .wp-block-gallery:not(.sf-hero) img { cursor: pointer; }
+
 /* разделитель */
 .wp-block-separator.sf-line {
 	border: 0;

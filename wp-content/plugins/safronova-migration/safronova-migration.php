@@ -329,6 +329,10 @@ function sfmig_import_content() {
 	update_option( 'blogname', 'Елена Сафронова' );
 	update_option( 'blogdescription', 'Фотограф беременности и новорожденных в Киеве' );
 	update_option( 'sf_contact_email', 'info.elenasafronova@gmail.com' );
+	// Facebook Pixel, который стоял на сайте Vigbo (виден в коде страниц safronova.com.ua).
+	if ( ! get_option( 'sf_fb_pixel' ) ) {
+		update_option( 'sf_fb_pixel', '216643308703754' );
+	}
 	update_option( 'default_comment_status', 'closed' );
 
 	sfmig_build_menus( $ids );

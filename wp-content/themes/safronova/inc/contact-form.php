@@ -106,7 +106,10 @@ function safronova_process_contact() {
 	$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
 	$headers[] = 'Reply-To: ' . ( $name ? str_replace( array( "\r", "\n", '<', '>', ',' ), '', $name ) . ' ' : '' ) . '<' . $email . '>';
 
-	if ( ! wp_mail( $to, $subject, $body, $headers ) ) {
+	$mailed = wp_mail( $to, $subject, $body, $headers );
+	// Заявка всегда сохраняется в админке (раздел «Заявки»), даже если почта не настроена.
+	$saved = function_exists( 'safronova_save_lead' ) ? safronova_save_lead( $name, $email, $message, $mailed ) : 0;
+	if ( ! $mailed && ! $saved ) {
 		return 'Не удалось отправить сообщение. Попробуйте ещё раз или напишите на почту.';
 	}
 	set_transient( $key, 1, 30 );

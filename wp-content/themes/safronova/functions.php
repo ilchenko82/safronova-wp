@@ -16,6 +16,10 @@ define( 'SAFRONOVA_URI', get_template_directory_uri() );
 require_once SAFRONOVA_DIR . '/inc/header.php';
 require_once SAFRONOVA_DIR . '/inc/contact-form.php';
 require_once SAFRONOVA_DIR . '/inc/seo.php';
+require_once SAFRONOVA_DIR . '/inc/leads.php';
+require_once SAFRONOVA_DIR . '/inc/admin.php';
+require_once SAFRONOVA_DIR . '/inc/patterns.php';
+require_once SAFRONOVA_DIR . '/inc/analytics.php';
 
 add_action( 'after_setup_theme', 'safronova_setup' );
 /**
