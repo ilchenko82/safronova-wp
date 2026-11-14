@@ -156,6 +156,8 @@ img { max-width: 100%; height: auto; }
 .sf-mobile li.is-open > .sub-menu { display: block; }
 .sf-mobile .sub-menu a { padding: 10px 0; }
 body.sf-menu-open { overflow: hidden; }
+.admin-bar .sf-mobile, .admin-bar .sf-lb { top: 32px; }
+@media (max-width: 782px) { .admin-bar .sf-mobile, .admin-bar .sf-lb { top: 46px; } }
 
 /* ---------- Контент ---------- */
 .sf-main { padding: 60px var(--sf-pad-x) 0; }
