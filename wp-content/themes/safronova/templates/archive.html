@@ -1,0 +1,18 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","className":"sf-site-header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"sf-main","layout":{"type":"default"}} -->
+<main class="wp-block-group sf-main"><!-- wp:query {"queryId":1,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"sf-blog"} -->
+<div class="wp-block-query sf-blog"><!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"2/3","sizeSlug":"large"} /-->
+<!-- wp:post-title {"isLink":true,"level":2} /-->
+<!-- /wp:post-template -->
+
+<!-- wp:query-pagination {"paginationArrow":"none","layout":{"type":"flex","justifyContent":"center"}} -->
+<!-- wp:query-pagination-previous {"label":"Назад"} /-->
+<!-- wp:query-pagination-numbers /-->
+<!-- wp:query-pagination-next {"label":"Далі"} /-->
+<!-- /wp:query-pagination --></div>
+<!-- /wp:query --></main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","className":"sf-site-footer"} /-->

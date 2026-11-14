@@ -1,0 +1,7 @@
+# Фото, скачанные download-assets.ps1 (большие файлы — по желанию можно убрать эту строку и закоммитить)
+wp-content/plugins/safronova-migration/media/*
+!wp-content/plugins/safronova-migration/media/README.txt
+download-errors.txt
+*.zip
+Thumbs.db
+.DS_Store

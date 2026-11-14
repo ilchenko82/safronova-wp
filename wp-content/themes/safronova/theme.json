@@ -1,0 +1,69 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": false,
+		"layout": {
+			"contentSize": "min(1600px, 100%)",
+			"wideSize": "1600px"
+		},
+		"color": {
+			"defaultPalette": false,
+			"palette": [
+				{ "slug": "white", "color": "#ffffff", "name": "Белый" },
+				{ "slug": "black", "color": "#000000", "name": "Чёрный" },
+				{ "slug": "grey", "color": "#cccccc", "name": "Серый (наведение)" },
+				{ "slug": "light-grey", "color": "#aaaaaa", "name": "Светло-серый" },
+				{ "slug": "dark", "color": "#303030", "name": "Тёмно-серый" }
+			]
+		},
+		"typography": {
+			"defaultFontSizes": false,
+			"fluid": false,
+			"fontFamilies": [
+				{ "slug": "fira-sans", "name": "Fira Sans", "fontFamily": "'Fira Sans', sans-serif" },
+				{ "slug": "playfair", "name": "Playfair Display", "fontFamily": "'Playfair Display', serif" }
+			],
+			"fontSizes": [
+				{ "slug": "xs", "size": "12px", "name": "12" },
+				{ "slug": "small", "size": "14px", "name": "14" },
+				{ "slug": "medium", "size": "16px", "name": "16" },
+				{ "slug": "large", "size": "24px", "name": "24" },
+				{ "slug": "x-large", "size": "30px", "name": "30" },
+				{ "slug": "huge", "size": "50px", "name": "50" }
+			]
+		},
+		"spacing": {
+			"units": [ "px", "%", "vh", "vw" ],
+			"blockGap": true
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "#ffffff",
+			"text": "#000000"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--fira-sans)",
+			"fontSize": "16px",
+			"lineHeight": "1.4"
+		},
+		"spacing": {
+			"blockGap": "0px",
+			"padding": { "top": "0px", "right": "0px", "bottom": "0px", "left": "0px" }
+		},
+		"elements": {
+			"link": {
+				"color": { "text": "inherit" },
+				":hover": { "color": { "text": "#cccccc" } },
+				"typography": { "textDecoration": "none" }
+			}
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "Шапка", "area": "header" },
+		{ "name": "footer", "title": "Подвал", "area": "footer" }
+	],
+	"customTemplates": []
+}
