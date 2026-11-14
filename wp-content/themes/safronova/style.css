@@ -208,6 +208,11 @@ body.sf-menu-open { overflow: hidden; }
 .wp-block-gallery.sf-gallery > .wp-block-image { width: 100% !important; margin: 0 !important; }
 .wp-block-gallery.sf-gallery img { width: 100% !important; height: auto !important; cursor: pointer; transition: opacity .3s; }
 .wp-block-gallery.sf-gallery img:hover { opacity: .85; }
+/* Сетка-кладка как «плитка» Vigbo (новорічні фото): 3 колонки без зазорів, на телефоні 2 */
+.wp-block-gallery.sf-gallery--grid { display: block !important; column-count: 3; column-gap: 0; }
+.wp-block-gallery.sf-gallery--grid > .wp-block-image { display: block; break-inside: avoid; }
+.wp-block-gallery.sf-gallery--grid > .wp-block-image img { display: block; }
+@media (max-width: 767px) { .wp-block-gallery.sf-gallery--grid { column-count: 2; } }
 
 .wp-block-post-content .wp-block-gallery:not(.sf-hero) img { cursor: pointer; }
 

@@ -211,7 +211,7 @@ def widget(w, ctx):
     if t == 'sp':  return spacer(w[1])
     if t == 'tx':  return text_widget(w[1], w[2])
     if t == 'im':  return image(w[1], w[2], w[3], w[4], w[5], w[6], w[7])
-    if t == 'ga':  return gallery(w[2])
+    if t == 'ga':  return gallery(w[2], 'sf-gallery' if w[1] == '2' else 'sf-gallery sf-gallery--grid')
     if t == 'so':  return social(w[1], ctx.get('social', 'center'))
     if t == 'ln':  return line(w[1])
     if t == 'fm':  return form()
@@ -223,6 +223,11 @@ def sections(secs, ctx=None):
     out = []
     for rows in secs:
         for row in rows:
+            row = [c for c in row if c[1]]          # порожні колонки (віджет Instagram, що зник)
+            if not row:
+                continue
+            if all(all(w[0] == 'sp' for w in ws) for _, ws in row) and len(row) > 1:
+                continue                              # рядок лише з відступами — це порожнє місце
             if len(row) == 1 and row[0][0] == 24:
                 out += [widget(w, ctx) for w in row[0][1]]
                 continue
@@ -256,6 +261,15 @@ PAGES = {
     '/faq':                   ('faq', 'Питання/Відповідь', 6),
     '/reviews':               ('reviews', 'Відгуки', 7),
     '/contacts':              ('contacts', 'Контакти', 8),
+}
+
+HIDDEN_TITLES = {
+    'novogodnie-fotosessii':                  'Новорічні фотосесії',
+    'obrabotka-fotografij':                   'Обробка фотографій: Lightroom + Photoshop',
+    'prokat-odezhdy':                         'Прокат одягу (Dress Bar)',
+    'rekomendatsii':                          'Рекомендації з підготовки',
+    'raspisanie-novogodnih-semok-2018-2019':  'Розклад новорічних зйомок 2018–2019',
+    'prices':                                 'Ціни (стара сторінка)',
 }
 
 
@@ -300,6 +314,13 @@ def main():
         out['posts'].append({'slug': href.split('/')[-1], 'title': p['h1'] or ttl, 'content': sections(p['s']),
                              'featured': url(prev), 'seo_title': p['t'], 'seo_desc': p['d'],
                              'date_offset_days': i})
+    # приховані сторінки (на Vigbo — без пункту в меню, доступні лише за посиланням)
+    hidden = json.load(open(os.path.join(ROOT, 'data', 'hidden.json'), encoding='utf-8'))
+    for i, p in enumerate(hidden):
+        slug = p['u'].strip('/')
+        out['pages'].append({'slug': slug, 'title': HIDDEN_TITLES[slug], 'order': 20 + i,
+                             'content': sections(p['s']), 'seo_title': p['t'], 'seo_desc': p['d'],
+                             'hidden': True})
     out['media'] = MEDIA
 
     os.makedirs(OUT_PLUGIN, exist_ok=True)

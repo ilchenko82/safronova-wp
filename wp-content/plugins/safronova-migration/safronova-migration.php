@@ -166,7 +166,7 @@ function sfmig_js() {
   btn.disabled=true;
   var rc=document.getElementById('sfmig-recreate');
   var skip=btn.getAttribute('data-content-done')==='1' && !(rc && rc.checked);
-  var first=skip ? Promise.resolve({log:[{t:'Страницы уже созданы — докачиваю только недостающее'}]}) : (st.textContent='Создаю страницы, записи и меню…', call('content'));
+  var first=skip ? (st.textContent='Добавляю новые страницы (существующие не трогаю)…', call('missing')) : (st.textContent='Создаю страницы, записи и меню…', call('content'));
   first.then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Загружаю фото в медиатеку…'; return media(0);})
   .then(function(){st.textContent='Шрифты и логотип…'; return call('fonts');}).then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Заменяю ссылки на фото…'; return call('finalize');})
   .then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Перенос завершён ✔'; add('Готово. Откройте сайт и проверьте страницы. Плагин можно деактивировать и удалить.');})
@@ -197,6 +197,9 @@ function sfmig_ajax() {
 	switch ( $step ) {
 		case 'content':
 			wp_send_json_success( array( 'log' => sfmig_import_content() ) );
+			break;
+		case 'missing':
+			wp_send_json_success( array( 'log' => sfmig_import_missing() ) );
 			break;
 		case 'media':
 			wp_send_json_success( sfmig_import_media_batch() );
@@ -353,6 +356,41 @@ function sfmig_import_content() {
 	flush_rewrite_rules();
 	delete_option( 'sfmig_finished' );
 	update_option( 'sfmig_content_done', time(), false );
+	return $log;
+}
+
+/**
+ * Режим «Продолжить»: создаёт только те страницы и записи, которых ещё нет
+ * (например, скрытые страницы, добавленные в копию позже). Существующие — не трогает.
+ *
+ * @return array Журнал.
+ */
+function sfmig_import_missing() {
+	$d   = sfmig_data();
+	$log = array();
+	foreach ( (array) ( $d['pages'] ?? array() ) as $pg ) {
+		if ( get_page_by_path( $pg['slug'], OBJECT, 'page' ) ) {
+			continue;
+		}
+		if ( sfmig_upsert( $pg, 'page', array( 'menu_order' => (int) $pg['order'] ) ) ) {
+			$log[] = array( 't' => 'Новая страница: ' . $pg['title'] . ' → /' . $pg['slug'] . ( empty( $pg['hidden'] ) ? '' : ' (без пункта в меню, как на Vigbo)' ) );
+		}
+	}
+	foreach ( (array) ( $d['posts'] ?? array() ) as $ps ) {
+		if ( get_page_by_path( $ps['slug'], OBJECT, 'post' ) ) {
+			continue;
+		}
+		$id = sfmig_upsert( $ps, 'post' );
+		if ( $id && ! empty( $ps['featured'] ) ) {
+			update_post_meta( $id, '_sf_featured_src', esc_url_raw( $ps['featured'] ) );
+		}
+		$log[] = array( 't' => 'Новая запись блога: ' . $ps['title'] );
+	}
+	update_option( 'sfmig_media_map', array_filter( (array) get_option( 'sfmig_media_map', array() ) ), false );
+	delete_option( 'sfmig_finished' );
+	if ( ! $log ) {
+		$log[] = array( 't' => 'Все страницы уже на месте — докачиваю только недостающие фото' );
+	}
 	return $log;
 }
 
