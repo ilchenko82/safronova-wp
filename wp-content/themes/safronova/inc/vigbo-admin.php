@@ -394,6 +394,7 @@ function safronova_site_row( $page_id, $label, $in_menu, $url = '', $children = 
 			</label>
 			<?php if ( $page && current_user_can( 'edit_post', $page->ID ) ) : ?>
 				<a class="sfa-btn sfa-btn--sm" href="<?php echo esc_url( get_edit_post_link( $page->ID ) ); ?>">Редактировать</a>
+				<a class="sfa-icon sfa-edit-m" href="<?php echo esc_url( get_edit_post_link( $page->ID ) ); ?>" title="Редактировать"><span class="dashicons dashicons-edit"></span></a>
 			<?php endif; ?>
 			<a class="sfa-icon" href="<?php echo esc_url( $page ? get_permalink( $page ) : $url ); ?>" target="_blank" rel="noopener" title="Открыть на сайте"><span class="dashicons dashicons-visibility"></span></a>
 		</div>
@@ -460,6 +461,7 @@ function safronova_screen_site() {
 					<span class="sfa-handle dashicons dashicons-admin-home"></span>
 					<div class="sfa-row__main"><strong><?php echo esc_html( get_the_title( $front ) ); ?></strong><span class="sfa-path">/ · слайд-шоу на весь экран</span></div>
 					<a class="sfa-btn sfa-btn--sm" href="<?php echo esc_url( (string) get_edit_post_link( $front ) ); ?>">Редактировать</a>
+					<a class="sfa-icon sfa-edit-m" href="<?php echo esc_url( (string) get_edit_post_link( $front ) ); ?>" title="Редактировать"><span class="dashicons dashicons-edit"></span></a>
 					<a class="sfa-icon" href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank" rel="noopener" title="Открыть на сайте"><span class="dashicons dashicons-visibility"></span></a>
 				</div></div>
 			</section>

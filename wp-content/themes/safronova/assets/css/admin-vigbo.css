@@ -23,7 +23,7 @@ body.sfa #dashboard-widgets-wrap .welcome-panel { display: none !important; }
 html.wp-toolbar:has(body.sfa:not(.sfa-editor)) { padding-top: 0 !important; }
 body.sfa:not(.sfa-editor) #wpcontent,
 body.sfa:not(.sfa-editor).auto-fold #wpcontent { margin-left: 0 !important; padding-left: 0 !important; }
-body.sfa:not(.sfa-editor) #wpbody-content { padding: 20px 14px 110px; float: none; }
+body.sfa:not(.sfa-editor) #wpbody-content { padding: 20px 14px 110px; float: none; box-sizing: border-box; }
 body.sfa:not(.sfa-editor) .wrap { max-width: 1120px; margin: 0 auto; }
 
 /* --- шапка --- */
@@ -40,6 +40,7 @@ body.sfa:not(.sfa-editor) .wrap { max-width: 1120px; margin: 0 auto; }
 .sfa-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .sfa-leads { display: none; }
 .sfa-open span:last-child { display: none; }
+.sfa-open { width: 40px; min-height: 40px !important; padding: 0 !important; border-radius: 50% !important; }
 .sfa-user { position: relative; }
 .sfa-user summary { list-style: none; cursor: pointer; display: block; }
 .sfa-user summary::-webkit-details-marker { display: none; }
@@ -148,7 +149,8 @@ body.sfa input:focus, body.sfa textarea:focus, body.sfa select:focus { border-co
 .sfa-tag { font-style: normal; background: var(--sfa-bg); border-radius: 4px; padding: 1px 6px; margin-left: 4px; color: var(--sfa-ink); }
 .sfa-placeholder { height: 52px; margin: 2px 0; border: 1px dashed #000; border-radius: 10px; background: #fafafa; list-style: none; }
 .ui-sortable-helper .sfa-row__in { box-shadow: 0 8px 24px rgba(0,0,0,.15); border-radius: 10px; }
-.sfa-row__in .sfa-btn--sm { display: none; }
+.sfa-row__in .sfa-btn--sm { display: none; background: #fff !important; color: #000 !important; border-color: #d6d6d6 !important; }
+.sfa-row__in .sfa-btn--sm:hover { border-color: #000 !important; opacity: 1; }
 
 /* переключатель «В меню» */
 .sfa-switch { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; flex: 0 0 auto; }
@@ -232,7 +234,8 @@ body.sfa input:focus, body.sfa textarea:focus, body.sfa select:focus { border-co
 	.sfa-leads { display: inline-flex; align-items: center; gap: 6px; color: var(--sfa-muted); text-decoration: none; font: 700 11px/1 var(--sfa-font); letter-spacing: 1px; text-transform: uppercase; }
 	.sfa-leads.is-active, .sfa-leads:hover { color: var(--sfa-ink); }
 	.sfa-badge { background: #e0245e; color: #fff; border-radius: 9px; padding: 3px 7px; font-size: 10px; letter-spacing: 0; }
-	.sfa-open { min-height: 36px; padding: 0 16px; }
+	.sfa-open { width: auto; min-height: 36px !important; padding: 0 16px !important; border-radius: 9999px !important; }
+	.sfa-edit-m { display: none; }
 	.sfa-open span:last-child { display: inline; }
 	.sfa-card { padding: 24px 30px; }
 	.sfa-row__in { padding: 10px 8px; }
@@ -259,7 +262,7 @@ body.sfa input:focus, body.sfa textarea:focus, body.sfa select:focus { border-co
 .sfa-dock__list::-webkit-scrollbar { display: none; }
 .sfa-dock__b, .sfa-dock__toggle {
 	flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px;
-	min-width: 72px; padding: 9px 8px 8px; border: 0; background: none; cursor: pointer; color: #1a1a1a;
+	min-width: 66px; padding: 9px 6px 8px; border: 0; background: none; cursor: pointer; color: #1a1a1a;
 	font: 400 10px/1.15 var(--sfa-font); letter-spacing: .3px; text-transform: uppercase; text-align: center;
 }
 .sfa-dock__b:hover, .sfa-dock__b:focus-visible { background: #f2f2f2; outline: none; }
@@ -276,4 +279,5 @@ body.sfa .interface-interface-skeleton__body { padding-bottom: 68px; }
 	.sfa-dock:not(.is-closed) { left: 50%; right: auto; bottom: 16px; transform: translateX(-50%); max-width: calc(100vw - 32px); border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,.14); overflow: hidden; }
 	body.sfa .interface-interface-skeleton__body { padding-bottom: 0; }
 	body.sfa .editor-styles-wrapper { padding-bottom: 120px; }
+	.sfa-dock:not(.is-closed) .sfa-dock__b { min-width: 58px; font-size: 9px; }
 }
