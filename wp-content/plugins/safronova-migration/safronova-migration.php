@@ -56,8 +56,9 @@ function sfmig_data() {
 function sfmig_media_list() {
 	$d    = sfmig_data();
 	$list = isset( $d['media'] ) ? (array) $d['media'] : array();
-	if ( ! empty( $d['logo'] ) && ! in_array( $d['logo'], $list, true ) ) {
-		$list[] = $d['logo'];
+	if ( ! empty( $d['logo'] ) ) {
+		$list = array_values( array_diff( $list, array( $d['logo'] ) ) );
+		array_unshift( $list, $d['logo'] ); // логотип первым — сразу появится в шапке
 	}
 	return array_values( $list );
 }
@@ -102,8 +103,16 @@ function sfmig_page() {
 		<div style="max-width:720px;height:10px;background:#e5e5e5;border-radius:5px;overflow:hidden;margin-bottom:16px">
 			<div id="sfmig-bar" style="height:100%;width:<?php echo esc_attr( (string) ( $total ? round( $done / $total * 100 ) : 0 ) ); ?>%;background:#2271b1;transition:width .3s"></div>
 		</div>
+		<?php
+		$probe        = get_page_by_path( 'pregnancy' );
+		$content_done = (bool) get_option( 'sfmig_content_done' ) || ( $probe && get_post_meta( $probe->ID, '_sf_mig', true ) );
+		?>
+		<?php if ( $content_done ) : ?>
+			<p><label><input type="checkbox" id="sfmig-recreate"> Заново создать страницы, записи и меню из копии Vigbo <strong>(ваши правки на этих страницах будут перезаписаны)</strong></label></p>
+			<p class="description">Без галочки — только докачать недостающие фото, шрифты и логотип. Ваши изменения на страницах не трогаются.</p>
+		<?php endif; ?>
 		<p>
-			<button type="button" class="button button-primary button-hero" id="sfmig-start">Запустить перенос</button>
+			<button type="button" class="button button-primary button-hero" id="sfmig-start" data-content-done="<?php echo $content_done ? '1' : '0'; ?>"><?php echo esc_html( $content_done ? 'Продолжить перенос' : 'Запустить перенос' ); ?></button>
 		</p>
 		<p class="description">Можно запускать повторно: уже загруженные фото не скачиваются заново, страницы обновляются, дубли не создаются. Не закрывайте вкладку до конца загрузки (обычно 5–15 минут).</p>
 		<h2>Журнал</h2>
@@ -154,8 +163,11 @@ function sfmig_js() {
   return fetch(sfmig.ajax,{method:'POST',body:fd,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){ if(!j||!j.success){throw new Error((j&&j.data&&j.data.message)||'Ошибка сервера');} return j.data;});}
  function media(tries){ return call('media').then(function(d){ (d.log||[]).forEach(function(l){add(l.t,l.e);}); cnt.textContent=d.done+' из '+d.total; bar.style.width=(d.total?Math.round(d.done/d.total*100):100)+'%'; if(!d.finished){return media(0);} }).catch(function(e){ if(tries<3){add('Повтор после ошибки: '+e.message,true); return new Promise(function(r){setTimeout(r,3000);}).then(function(){return media(tries+1);});} throw e; }); }
  btn.addEventListener('click',function(){
-  btn.disabled=true; st.textContent='Создаю страницы, записи и меню…';
-  call('content').then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Загружаю фото в медиатеку…'; return media(0);})
+  btn.disabled=true;
+  var rc=document.getElementById('sfmig-recreate');
+  var skip=btn.getAttribute('data-content-done')==='1' && !(rc && rc.checked);
+  var first=skip ? Promise.resolve({log:[{t:'Страницы уже созданы — докачиваю только недостающее'}]}) : (st.textContent='Создаю страницы, записи и меню…', call('content'));
+  first.then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Загружаю фото в медиатеку…'; return media(0);})
   .then(function(){st.textContent='Шрифты и логотип…'; return call('fonts');}).then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Заменяю ссылки на фото…'; return call('finalize');})
   .then(function(d){(d.log||[]).forEach(function(l){add(l.t,l.e);}); st.textContent='Перенос завершён ✔'; add('Готово. Откройте сайт и проверьте страницы. Плагин можно деактивировать и удалить.');})
   .catch(function(e){st.textContent='Остановлено: '+e.message; add(e.message,true);})
@@ -340,6 +352,7 @@ function sfmig_import_content() {
 
 	flush_rewrite_rules();
 	delete_option( 'sfmig_finished' );
+	update_option( 'sfmig_content_done', time(), false );
 	return $log;
 }
 
@@ -459,6 +472,10 @@ function sfmig_import_media_batch() {
 		if ( $id ) {
 			$map[ $url ] = $id;
 			update_option( 'sfmig_media_map', $map, false );
+			$d = sfmig_data();
+			if ( ! empty( $d['logo'] ) && $d['logo'] === $url ) {
+				sfmig_theme_mod( 'custom_logo', $id );
+			}
 			$log[] = array( 't' => 'Фото: ' . wp_basename( (string) wp_parse_url( $url, PHP_URL_PATH ) ) );
 		} else {
 			$map[ $url ] = 0; // пропускаем, чтобы не зациклиться; ссылка останется на Vigbo

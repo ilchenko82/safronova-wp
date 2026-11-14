@@ -12,3 +12,4 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'sfmig_media_map' );
 delete_option( 'sfmig_errors' );
 delete_option( 'sfmig_finished' );
+delete_option( 'sfmig_content_done' );
